@@ -1,0 +1,10 @@
+{
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "endOfLine": "auto",
+  "importOrder": ["^@/(.*)"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderGroupNamespaceSpecifiers": true,
+  "importOrderCaseInsensitive": true
+}
