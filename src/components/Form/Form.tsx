@@ -6,13 +6,17 @@ import Input from '@/components/Input/Input';
 import Select from '@/components/Select/Select';
 import SubmitButton from '@/components/SubmitButton/SubmitButton';
 import { FormFieldsEnum, placeholders } from '@/constants/constants';
-import { FormFieldsType } from '@/types/types';
+import useFormFetch from '@/hooks/useFormFetch';
+import useFormFilter from '@/hooks/useFormFilter';
+import { FormFetchType, FormFieldsType, FormFilterType } from '@/types/types';
 
 const formFields = Object.values(FormFieldsEnum);
 const formInitialValues = {} as FormFieldsType;
 formFields.forEach(field => (formInitialValues[field] = ''));
 
 const Form: FC = (): ReactElement => {
+  const fetchedData: FormFetchType = useFormFetch();
+  const options: FormFilterType = useFormFilter(fetchedData);
   const [, setFormValues] = useState(formInitialValues);
   const { reset, watch, handleSubmit, register } = useForm<FormFieldsType>({
     defaultValues: { ...formInitialValues },
@@ -36,7 +40,7 @@ const Form: FC = (): ReactElement => {
           {placeholders[field] ? (
             <Input id={field} register={register} />
           ) : (
-            <Select id={field} register={register} />
+            <Select id={field} options={options[field]} register={register} />
           )}
         </Fragment>
       ))}
