@@ -9,16 +9,22 @@ import { FormFieldsEnum, placeholders } from '@/constants/constants';
 import useFormFetch from '@/hooks/useFormFetch';
 import useFormFilter from '@/hooks/useFormFilter';
 import { FormFetchType, FormFieldsType, FormFilterType } from '@/types/types';
+import { getTitle } from '@/utils/utils';
 
-const formFields = Object.values(FormFieldsEnum);
 const formInitialValues = {} as FormFieldsType;
-formFields.forEach(field => (formInitialValues[field] = ''));
+Object.values(FormFieldsEnum).forEach(field => (formInitialValues[field] = ''));
 
 const Form: FC = (): ReactElement => {
   const fetchedData: FormFetchType = useFormFetch();
   const options: FormFilterType = useFormFilter(fetchedData);
   const [, setFormValues] = useState(formInitialValues);
-  const { reset, watch, handleSubmit, register } = useForm<FormFieldsType>({
+  const {
+    reset,
+    watch,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<FormFieldsType>({
     defaultValues: { ...formInitialValues },
   });
 
@@ -35,15 +41,29 @@ const Form: FC = (): ReactElement => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
-      {formFields.map(field => (
-        <Fragment key={field}>
-          {placeholders[field] ? (
-            <Input id={field} register={register} />
-          ) : (
-            <Select id={field} options={options[field]} register={register} />
-          )}
-        </Fragment>
-      ))}
+      {Object.entries(FormFieldsEnum).map(([key, field]) => {
+        const title = getTitle(key);
+        return (
+          <Fragment key={field}>
+            {placeholders[field] ? (
+              <Input
+                id={field}
+                title={title}
+                register={register}
+                error={errors[field]}
+              />
+            ) : (
+              <Select
+                id={field}
+                title={title}
+                options={options[field]}
+                register={register}
+                error={errors[field]}
+              />
+            )}
+          </Fragment>
+        );
+      })}
       <SubmitButton />
     </form>
   );
