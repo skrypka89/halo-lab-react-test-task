@@ -13,7 +13,7 @@ export enum FormFieldsEnum {
 
 export const placeholders: Partial<FormFieldsType> = {
   [FormFieldsEnum.NAME]: 'Please enter your name',
-  [FormFieldsEnum.BIRTHDAY_DATE]: 'dd/mm/yyyy',
+  [FormFieldsEnum.BIRTHDAY_DATE]: 'DD/MM/YYYY',
   [FormFieldsEnum.EMAIL]: 'example@email.com',
   [FormFieldsEnum.MOBILE_NUMBER]: '+380ХХХХХХХХХ',
 };

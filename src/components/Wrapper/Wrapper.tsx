@@ -22,7 +22,7 @@ const Wrapper: FC<PropsType> = ({
     <div className={styles.wrapper}>
       <label htmlFor={id}>{title}</label>
       {children}
-      {error && <p>{error.message}</p>}
+      {error && <p className={styles.wrapper__error}>{error.message}</p>}
     </div>
   );
 };

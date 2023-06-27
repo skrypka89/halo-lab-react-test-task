@@ -24,7 +24,11 @@ const Select: FC<PropsType> = ({
 }): ReactElement => {
   return (
     <Wrapper id={id} title={title} error={error}>
-      <select id={id} className={styles.select} {...register(id)}>
+      <select
+        id={id}
+        className={`${styles.select} ${error && styles.select__error}`}
+        {...register(id)}
+      >
         <option value="">{`Select ${title}`}</option>
         {options.map((opt: Partial<SelectOptionsType>) => (
           <option value={opt.value} key={opt.id}>
