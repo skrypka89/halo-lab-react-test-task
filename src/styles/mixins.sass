@@ -2,6 +2,10 @@
   
 @mixin formFieldsMixin
   display: block
-  border-width: $borderWidth
+  min-width: $width
+  padding: 5px 10px
+  border-width: 2px
+  border-style: solid
+  border-color: $border
   &__error
-    border-color: $redColor
+    border-color: $error
