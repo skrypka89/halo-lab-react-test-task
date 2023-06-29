@@ -10,7 +10,7 @@ import SubmitButton from '@/components/SubmitButton/SubmitButton';
 import { FormFieldsEnum, placeholders } from '@/constants/constants';
 import useFormFetch from '@/hooks/useFormFetch';
 import useFormFilter from '@/hooks/useFormFilter';
-import { FormFetchType, FormFieldsType, FormFilterType } from '@/types/types';
+import { FormFetchType, FormFieldsType, FormFilterType, SelectedFormFields } from '@/types/types';
 import { getTitle } from '@/utils/utils';
 import { schema } from '@/validation/schema';
 
@@ -19,8 +19,7 @@ Object.values(FormFieldsEnum).forEach(field => (formInitialValues[field] = ''));
 
 const Form: FC = (): ReactElement => {
   const fetchedData: FormFetchType = useFormFetch();
-  const options: FormFilterType = useFormFilter(fetchedData);
-  const [, setFormValues] = useState(formInitialValues);
+  const [formValues, setFormValues] = useState(formInitialValues);
   const {
     reset,
     watch,
@@ -34,6 +33,7 @@ const Form: FC = (): ReactElement => {
     defaultValues: { ...formInitialValues },
     resolver: yupResolver(schema) as Resolver<FormFieldsType>,
   });
+  const options: FormFilterType = useFormFilter(fetchedData, formValues, setValue);
 
   const onSubmit = (data: FormFieldsType) => {
     console.log(data);
@@ -47,11 +47,7 @@ const Form: FC = (): ReactElement => {
   };
 
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit(onSubmit)}
-      onChange={handleChange}
-    >
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
       {Object.entries(FormFieldsEnum).map(([key, field]) => {
         const title = getTitle(key);
         return (
@@ -70,8 +66,9 @@ const Form: FC = (): ReactElement => {
               <Select
                 id={field}
                 title={title}
-                options={options[field]}
+                options={options[field as FormFieldsEnum.SEX | SelectedFormFields]}
                 register={register}
+                setValue={setValue}
                 error={errors[field]}
               />
             )}

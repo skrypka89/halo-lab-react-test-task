@@ -12,12 +12,7 @@ type PropsType = {
   error?: FieldError;
 };
 
-const Wrapper: FC<PropsType> = ({
-  id,
-  title,
-  children,
-  error,
-}): ReactElement => {
+const Wrapper: FC<PropsType> = ({ id, title, children, error }): ReactElement => {
   return (
     <div className={styles.wrapper}>
       <label htmlFor={id}>{title}</label>

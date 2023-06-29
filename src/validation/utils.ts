@@ -10,19 +10,16 @@ export function checkBirthdayDate(value: string): boolean {
   return (
     date.getFullYear() === year &&
     date.getMonth() === month - 1 &&
-    year > 1900 &&
+    year >= 1900 &&
     Date.now() > date.getTime()
   );
 }
 
-export function checkIfRequired(
-  field: FormFieldsEnum.EMAIL | FormFieldsEnum.MOBILE_NUMBER
-) {
+export function checkIfRequired(field: FormFieldsEnum.EMAIL | FormFieldsEnum.MOBILE_NUMBER) {
   return (value: string | undefined, context: yup.TestContext<yup.AnyObject>) =>
     !!context.parent[getEmailOrPhoneField(field)] || !!value;
 }
 
 export function checkFormat(field: FormFieldsEnum) {
-  return (value: string | undefined) =>
-    value ? (patterns[field] as RegExp).test(value) : true;
+  return (value: string | undefined) => (value ? (patterns[field] as RegExp).test(value) : true);
 }

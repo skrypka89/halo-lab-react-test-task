@@ -1,35 +1,45 @@
 import { useMemo } from 'react';
+import { UseFormSetValue } from 'react-hook-form';
 
-import { FormFieldsEnum, sexOptions } from '@/constants/constants';
+import { FormFieldsEnum } from '@/constants/constants';
+import { FormFetchType, FormFieldsType, FormFilterType } from '@/types/types';
 import {
-  FetchedDataType,
-  FormFetchType,
-  FormFilterType,
-  SelectOptionsType,
-} from '@/types/types';
+  changeOptions,
+  filterByBirthday,
+  filterByDoctor,
+  filterDoctors,
+  getInitialDoctorsList,
+  getInitialOptions,
+} from '@/utils/formFilterUtils';
 
-export default function useFormFilter(data: FormFetchType): FormFilterType {
-  const filteredOptions = useMemo(() => {
-    const options = {
-      [FormFieldsEnum.SEX]: sexOptions,
-      [FormFieldsEnum.CITY]: [],
-      [FormFieldsEnum.DOCTOR_SPECIALITY]: [],
-      [FormFieldsEnum.DOCTOR]: [],
-    } as FormFilterType;
-    (Object.entries(data) as [FormFieldsEnum, FetchedDataType[]][]).forEach(
-      ([field, fetched]) => {
-        const selected = options[field] as SelectOptionsType[];
-        fetched.forEach(({ id, name, surname }) => {
-          selected.push({
-            id,
-            value:
-              field !== FormFieldsEnum.DOCTOR ? name : name + ' ' + surname,
-          });
-        });
+export default function useFormFilter(
+  data: FormFetchType,
+  formValues: FormFieldsType,
+  setValue: UseFormSetValue<FormFieldsType>
+): FormFilterType {
+  const options = useMemo(() => {
+    const initialOptions = getInitialOptions(data);
+    let doctors = getInitialDoctorsList(data);
+    doctors = filterByBirthday(doctors, formValues[FormFieldsEnum.BIRTHDAY_DATE]);
+    doctors = filterDoctors(doctors, formValues, 'CITY');
+    doctors = filterDoctors(doctors, formValues, 'SEX');
+    doctors = filterDoctors(doctors, formValues, 'DOCTOR_SPECIALITY');
+    if (formValues[FormFieldsEnum.DOCTOR]) {
+      const {
+        sex,
+        city,
+        speciality,
+        doctors: filteredDoctors,
+      } = filterByDoctor(doctors, formValues[FormFieldsEnum.DOCTOR]);
+      doctors = filteredDoctors;
+      if (sex) {
+        setValue(FormFieldsEnum.SEX, sex);
       }
-    );
-    return options;
-  }, [data]);
+      setValue(FormFieldsEnum.CITY, city);
+      setValue(FormFieldsEnum.DOCTOR_SPECIALITY, speciality);
+    }
+    return changeOptions(initialOptions, formValues, doctors);
+  }, [data, formValues, setValue]);
 
-  return filteredOptions;
+  return options;
 }

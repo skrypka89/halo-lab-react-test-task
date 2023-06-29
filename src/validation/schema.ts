@@ -2,28 +2,18 @@ import * as yup from 'yup';
 
 import { FormFieldsEnum } from '@/constants/constants';
 import { patterns } from '@/validation/patterns';
-import {
-  checkBirthdayDate,
-  checkFormat,
-  checkIfRequired,
-} from '@/validation/utils';
+import { checkBirthdayDate, checkFormat, checkIfRequired } from '@/validation/utils';
 
 export const schema = yup.object().shape({
   [FormFieldsEnum.NAME]: yup
     .string()
     .required("Field 'Name' is required")
-    .matches(
-      patterns[FormFieldsEnum.NAME] as RegExp,
-      "Field 'Name' must not contain numbers"
-    ),
+    .matches(patterns[FormFieldsEnum.NAME] as RegExp, "Field 'Name' must not contain numbers"),
 
   [FormFieldsEnum.BIRTHDAY_DATE]: yup
     .string()
     .required("Field 'Birthday' is required")
-    .matches(
-      patterns[FormFieldsEnum.BIRTHDAY_DATE] as RegExp,
-      'Date format must be DD/MM/YYYY'
-    )
+    .matches(patterns[FormFieldsEnum.BIRTHDAY_DATE] as RegExp, 'Date format must be DD/MM/YYYY')
     .test(FormFieldsEnum.BIRTHDAY_DATE, 'Invalid date', checkBirthdayDate),
 
   [FormFieldsEnum.SEX]: yup.string().required("Field 'Sex' is required"),
@@ -39,11 +29,7 @@ export const schema = yup.object().shape({
       'Enter at least phone number or email',
       checkIfRequired(FormFieldsEnum.EMAIL)
     )
-    .test(
-      FormFieldsEnum.EMAIL,
-      'Invalid email',
-      checkFormat(FormFieldsEnum.EMAIL)
-    ),
+    .test(FormFieldsEnum.EMAIL, 'Invalid email', checkFormat(FormFieldsEnum.EMAIL)),
 
   [FormFieldsEnum.MOBILE_NUMBER]: yup
     .string()
